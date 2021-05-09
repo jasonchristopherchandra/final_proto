@@ -1,17 +1,14 @@
 {% load socialaccount %}
 <html>
 <body>
-  <div class="topnav">
-    <a class="active" href="#home">Home</a>
-    <a href="#news">News</a>
-    <a href="#contact">Contact</a>
-    <a href="#about">About</a>
-  </div>
+  {% include "navbar.html" %}
+  
 <h1>My Google OAuth Project </h1>
 {% if user.is_authenticated %}
   <p>Welcome, You are logged in as {{ user.username }}</p>
-  <button>Start</button>
+  <a href="/enter_url/">Input URL</a>
 {% else %}
+<p>Hello, this is the app,m please login to use</p>
   <a href="{% provider_login_url 'google' %}">Login With Google</a>
 {% endif %}
 </body>

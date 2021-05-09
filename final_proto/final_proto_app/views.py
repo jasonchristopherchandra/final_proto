@@ -27,3 +27,11 @@ def get_name(request):
         form = YTForm()
 
     return render(request, 'start.html', {'form': form})
+
+def retrieveURL(request):
+    title = " "
+    if request.method == "POST":
+        title = request.POST.get('URL')
+        print(title)
+    context = {'title':title,}
+    return render(request, "viewsend.html",  context)

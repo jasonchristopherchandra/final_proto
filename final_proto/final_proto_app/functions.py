@@ -17,9 +17,9 @@ def extract_video_id(url):
         if query.path == '/watch': return parse_qs(query.query)['v'][0]
         if query.path[:7] == '/embed/': return query.path.split('/')[2]
         if query.path[:3] == '/v/': return query.path.split('/')[2]
+    print(query)
     # fail?
     return None
-
 
 def send_message(url, message,request):
     id = extract_video_id(url)

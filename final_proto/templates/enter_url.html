@@ -1,0 +1,9 @@
+<html>
+    <body>
+        <form action="/get_url/" method="POST"> 
+            {% csrf_token %}
+            <input type="text" name="URL" placeholder="Repeat" size=2>
+            <input type="submit" value="Save!">
+     </form>
+    </body>
+</html>
