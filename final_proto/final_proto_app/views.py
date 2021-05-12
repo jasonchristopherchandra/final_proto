@@ -21,17 +21,19 @@ def get_name(request):
             message = request.POST['message']
             url = request.POST['URL']
             send_message(url, message,request1)
+            
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = YTForm()
 
-    return render(request, 'start.html', {'form': form})
+    return render(request, 'proto.html', {'form': form})
 
 def retrieveURL(request):
-    title = " "
+    title = ""
     if request.method == "POST":
-        title = request.POST.get('URL')
+        title = str(request.POST.get('URL'))
         print(title)
-    context = {'title':title,}
-    return render(request, "viewsend.html",  context)
+        print(isinstance(title, str))
+        context = {'title':title}
+        return render(request, "viewsend.html",  context)

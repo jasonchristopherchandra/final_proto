@@ -1,3 +1,19 @@
 {% include "navbar.html" %}
 
-{{title}}
+
+
+<!-- {% load embed_video_tags %}
+
+{% video item.video 'small' %} -->
+<!-- The video tag:
+{% video item.video as my_video %}
+  URL: {{title}}
+  Thumbnail: {{ my_video.thumbnail }}
+  Backend: {{ my_video.backend }}
+
+  {% video my_video "large" %}
+{% endvideo %} -->
+{% load embed_video_tags %}
+
+{% video title "large" %}
+

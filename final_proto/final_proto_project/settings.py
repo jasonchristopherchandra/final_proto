@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'allauth.account',
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
+    'embed_video',
 ]
 
 MIDDLEWARE = [
@@ -72,6 +73,7 @@ TEMPLATES = [
         },
     },
 ]
+SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
 
 WSGI_APPLICATION = 'final_proto_project.wsgi.application'
 
