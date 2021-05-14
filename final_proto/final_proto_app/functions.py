@@ -7,6 +7,7 @@ from allauth.socialaccount.models import SocialToken, SocialApp
 from django.shortcuts import render,redirect
 from django.http import HttpResponseRedirect
 from pytchat import LiveChat, CompatibleProcessor
+from chat_downloader import ChatDownloader
 import time
 import pytchat
 
@@ -61,7 +62,9 @@ def send_message(url, message,request):
     # print("you are currently watching " + response['items'][0]['snippet']['title'] + " by: " + response['items'][0]['snippet']['channelTitle'])
     if response['items'][0]['snippet']['liveBroadcastContent'] == 'none':
         print("hey this isnt a live stream, checking if this is an archive")
-        archive_checker(id)
+        chat = ChatDownloader().get_chat(url)       # create a generator
+        for message in chat:
+            print(chat.format(message))     
         return render(request, 'index.html')
     else:
         livechatid = response['items'][0]['liveStreamingDetails']['activeLiveChatId']
