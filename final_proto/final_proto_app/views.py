@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from .forms import YTForm
-from .functions import send_message
+from .functions import send_message,view_message
 
 
 import pytchat 
@@ -36,4 +36,5 @@ def retrieveURL(request):
         print(title)
         print(isinstance(title, str))
         context = {'title':title}
+        view_message(title,request)
         return render(request, "viewsend.html",  context)

@@ -92,4 +92,66 @@ def send_message(url, message,request):
 
     # print(response2)
 
+def view_message(url,request):
+    id = extract_video_id(url)
+    print(id)
+    token = SocialToken.objects.get(account__user=request.user, account__provider='google')
+    print(token)
+    # CLIENT_SECRET_FILE = 'client_secret_51870834106-rtq1bi2n4n6cme450auv0iffv9fpokre.apps.googleusercontent.com.json'
+    # flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
+    credentials = Credentials(
+        token=token.token,
+        refresh_token=token.token_secret,
+        token_uri='https://oauth2.googleapis.com/token',
+        client_id='375686044917-4ip2r585igrkf6kesp3ggmfd45f53433.apps.googleusercontent.com', # replace with yours 
+        client_secret='HZgBiq-fG0_vrfsxHHNA7Ptu') # replace with yours 
+    print("secret token:"+ " "+credentials.refresh_token)
+    service = build('youtube', 'v3', credentials=credentials)
+    print(service)
+    
+
+    part_string = 'snippet,liveStreamingDetails'
+    video_ids = id
+    #find data using API regarding video
+    print(id)
+    response = service.videos().list(
+        part=part_string,
+        id=video_ids
+    ).execute()
+
+    print(response)
+    #gets active livechat id and channelid
+    channelid = response['items'][0]['snippet']['channelId']
+    # print("this is the channel id: " + response['items'][0]['snippet']['channelId'])
+    # print("you are currently watching " + response['items'][0]['snippet']['title'] + " by: " + response['items'][0]['snippet']['channelTitle'])
+    if response['items'][0]['snippet']['liveBroadcastContent'] == 'none':
+        print("hey this isnt a live stream, checking if this is an archive")
+        chat = ChatDownloader().get_chat(url)       # create a generator
+        for message in chat:
+            print(chat.format(message))     
+        return render(request, 'index.html')
+    else:
+        livechatid = response['items'][0]['liveStreamingDetails']['activeLiveChatId']
+    print("this is the livechat id: " + response['items'][0]['liveStreamingDetails']['activeLiveChatId'])
+    response1 = service.liveChatMessages().list(
+            liveChatId = livechatid,
+            part = 'snippet'
+        ).execute()
+
+    print(response1)
+    #sends out a message to the live chat 
+    # response2 = service.liveChatMessages().insert(
+    #     part = 'snippet',
+    #     body = dict (
+    #         snippet = dict(
+    #             liveChatId = livechatid,
+    #             type = "textMessageEvent",
+    #             textMessageDetails = dict(
+    #                 messageText = message
+    #             )
+    #         )
+    #     )  
+    # ).execute()
+
+    # print(response2)
 
