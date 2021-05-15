@@ -31,10 +31,14 @@ def get_name(request):
 
 def retrieveURL(request):
     title = ""
+    context = {}
     if request.method == "POST":
         title = str(request.POST.get('URL'))
         print(title)
         print(isinstance(title, str))
-        context = {'title':title}
-        view_message(title,request)
+        messages = view_message(title,request)
+        videoDetails = {'title':title}
+        context = {'videoDetails': videoDetails, 'chatDetails': messages}
+        print("this is it")
+        print(context)
         return render(request, "viewsend.html",  context)

@@ -1,21 +1,21 @@
 {% include "navbar.html" %}
 
 
-
-<!-- {% load embed_video_tags %}
-
-{% video item.video 'small' %} -->
-<!-- The video tag:
-{% video item.video as my_video %}
-  URL: {{title}}
-  Thumbnail: {{ my_video.thumbnail }}
-  Backend: {{ my_video.backend }}
-
-  {% video my_video "large" %}
-{% endvideo %} -->
 {% load embed_video_tags %}
 
-{% video title "large" %}
 
 
+{% video videoDetails.title "large" %}
 
+
+<br>
+{% for message_entry,messages in chatDetails.items %}
+   <p>{{messages.author}} : {{messages.message}} </p>
+    <br>
+{% endfor %}
+
+<script>
+  function looper() {
+    setInterval( 3000);
+  }
+  </script>

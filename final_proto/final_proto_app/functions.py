@@ -128,8 +128,8 @@ def view_message(url,request):
         print("hey this isnt a live stream, checking if this is an archive")
         chat = ChatDownloader().get_chat(url)       # create a generator
         for message in chat:
-            print(chat.format(message))     
-        return render(request, 'index.html')
+            print(chat.format(message))    
+            context = {'message':chat.format(message)} 
     else:
         livechatid = response['items'][0]['liveStreamingDetails']['activeLiveChatId']
     print("this is the livechat id: " + response['items'][0]['liveStreamingDetails']['activeLiveChatId'])
@@ -137,8 +137,23 @@ def view_message(url,request):
             liveChatId = livechatid,
             part = 'snippet'
         ).execute()
-
-    print(response1)
+    print(type(response1))
+    print(type(response1['items']))
+    
+    context1 = {} 
+    for i in range(len(response1['items'])):
+        message = response1['items'][i]['snippet']['textMessageDetails']['messageText']
+        response2 = service.channels().list(
+            id = response1['items'][i]['snippet']['authorChannelId'],
+            part = 'snippet'
+        ).execute()
+        author = response2['items'][0]['snippet']['title']
+        context1['message_entry '+ str(i)] = { "author" : author, 'message':message}
+    # chat = ChatDownloader().get_chat(url)       # create a generator
+    # for message in chat:
+    #     print(chat.format(message))    
+    #     context1 = {'message':chat.format(message)} 
+    return context1
     #sends out a message to the live chat 
     # response2 = service.liveChatMessages().insert(
     #     part = 'snippet',
