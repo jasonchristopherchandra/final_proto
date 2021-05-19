@@ -6,6 +6,46 @@ app.config["DEBUG"] = True
 
 @app.route('/', methods=['GET'])
 def home():
-    return "<h1>Distant Reading Archive</h1><p>This site is a prototype API for distant reading of science fiction novels.</p>"
+    return "<h1>Proto Translation API for chat translator.</p>"
+
+# GET requests will be blocked
+@app.route('/translate_view', methods=['POST'])
+def translate_view():
+    request_data = request.get_json()
+
+    author = None
+    message = None
+
+    if request_data:
+        if 'author' in request_data:
+            author = request_data['author']
+
+        if 'message' in request_data:
+            message = request_data['message']
+
+    return '''
+           The author value is: {}
+           The message value is: {}
+           The boolean value is: {}'''.format(author,  message)
+
+@app.route('/translate_send', methods=['POST'])
+def translate_send():
+    request_data = request.get_json()
+
+    author = None
+    message = None
+
+    if request_data:
+        if 'author' in request_data:
+            author = request_data['author']
+
+        if 'message' in request_data:
+            message = request_data['message']
+
+    return '''
+           The author value is: {}
+           The message value is: {}
+           The boolean value is: {}'''.format(author,  message)
+
 
 app.run()
