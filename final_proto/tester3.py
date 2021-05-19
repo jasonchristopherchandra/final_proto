@@ -19,5 +19,5 @@ for message in chat:
     chatlist  = { }                      # iterate over messages
     chatlist['author'] = message['author']['name'].encode("ascii", errors="ignore").decode()
     chatlist['message'] = message['message'].encode("ascii", errors="ignore").decode()
-    with open('chatlist.txt', 'a+') as file:
+     with open('chatlist.txt', 'a+') as file:
       file.write(json.dumps(chatlist, indent=2))

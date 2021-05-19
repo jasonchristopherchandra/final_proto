@@ -99,16 +99,17 @@ def view_message(url,request):
     id = extract_video_id(url)
     print(id)
     proc = subprocess.Popen(shlex.split('python3 tester3.py ' + str(url)))
-    stdout = proc.communicate()[0]
+    # stdout = proc.communicate()[0]
     print("is this weird")
 
-    url = 'http://127.0.0.1:5000/translate_view/'
-    data = {
+    url = 'http://127.0.0.1:5000/translate_view'
+    json = {
     "author": "test author",
     "message": 'test_message',
     }
-    response = requests.post(url, data=data)
+    response = requests.post(url, json=json)
     print(response.json())
+    return response.data
     # token = SocialToken.objects.get(account__user=request.user, account__provider='google')
     # print(token)
     # # CLIENT_SECRET_FILE = 'client_secret_51870834106-rtq1bi2n4n6cme450auv0iffv9fpokre.apps.googleusercontent.com.json'
