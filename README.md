@@ -1,13 +1,15 @@
+UI DEVELOPMENT
+- Bootstrap only or entire framework ?
 
-display message on a loop
+VIEWING TRANSLATED MESSAGES ON PAGE
+- Use js to take translated message from a text file and view it on web page
 
-ui development (bootstrap or full on framework ?)
+SENDING MESSAGE 
+- Send form without refresh 
+- Create button to manually call send message translation functionality
+- Checking Functionality ( has user translated message ?) (extra feature not mandatory)
 
-create rest api for vincent joyan
-
-
-js take message from text file 
-
-text formatting for ai functionality ( emojis and symbols)
-
-translate message ( translarte button, change value within chatbox)
+AI ISSUES
+- create rest api for vincent joyan (created, adding other functionality phase)
+- text formatting for ai functionality ( emojis and symbols)
+- Censorship ( checking for curse words) (extra feature not mandatory)

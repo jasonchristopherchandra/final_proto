@@ -1,7 +1,9 @@
-import flask
+from flask import Flask, request, jsonify
 
-app = flask.Flask(__name__)
-app.config["DEBUG"] = True
+import sys
+
+app = Flask(__name__)
+# app.config["DEBUG"] = True
 
 
 @app.route('/', methods=['GET'])
@@ -12,21 +14,21 @@ def home():
 @app.route('/translate_view', methods=['POST'])
 def translate_view():
     request_data = request.get_json()
-
+    print(request_data, file=sys.stderr)
     author = None
     message = None
+    translated_message = None
 
     if request_data:
         if 'author' in request_data:
-            author = request_data['author']
+            author  = request_data['author']
 
         if 'message' in request_data:
-            message = request_data['message']
+             message  = request_data['message']
+             translated_message = "OK message accepted"
+        
 
-    return '''
-           The author value is: {}
-           The message value is: {}
-           The boolean value is: {}'''.format(author,  message)
+    return jsonify({'author':author,'message':message,'translated_message':translated_message})
 
 @app.route('/translate_send', methods=['POST'])
 def translate_send():
