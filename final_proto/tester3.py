@@ -20,6 +20,7 @@ for message in chat:
     chatlist  = { }                      # iterate over messages
     chatlist['author'] = message['author']['name'].encode("ascii", errors="ignore").decode()
     chatlist['message'] = message['message'].encode("ascii", errors="ignore").decode()
+<<<<<<< HEAD
 
     url = 'http://127.0.0.1:5000/translate_view'
     data = {
@@ -30,3 +31,7 @@ for message in chat:
     with open('chatlist.txt', 'a+') as file:
       file.write(json.dumps(response.json()))
     #   call the translation api before dumpong into the original file 
+=======
+     with open('chatlist.txt', 'a+') as file:
+      file.write(json.dumps(chatlist, indent=2))
+>>>>>>> 9bd90fd59c90ce42c7b89ca54452720dff8da900

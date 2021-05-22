@@ -5,6 +5,9 @@ import sys
 app = Flask(__name__)
 # app.config["DEBUG"] = True
 
+def translate(str):
+    str = "sudah di edit"
+    return str
 
 @app.route('/', methods=['GET'])
 def home():
