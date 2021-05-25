@@ -13,3 +13,5 @@ AI ISSUES
 - create rest api for vincent joyan (created, adding other functionality phase)
 - text formatting for ai functionality ( emojis and symbols)
 - Censorship ( checking for curse words) (extra feature not mandatory)
+
+testing site https://www.youtube.com/watch?v=5qap5aO4i9A

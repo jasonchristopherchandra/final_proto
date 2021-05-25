@@ -13,6 +13,8 @@ import pytchat
 import subprocess
 import shlex
 import requests
+from django.http import StreamingHttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 def extract_video_id(url):
     # Examples:
@@ -101,7 +103,16 @@ def view_message(url,request):
     proc = subprocess.Popen(shlex.split('python3 tester3.py ' + str(url)))
     print("is this weird")
 
-    
+def get_translated_messages(url,request):
+    proc = subprocess.Popen(shlex.split('python3 tester4.py'))
+
+
+@csrf_exempt
+def display_text(request):
+    content = open('chatlist.txt', 'r').readline()
+    response = StreamingHttpResponse(content)
+    response['Content-Type'] = 'text/plain; charset=utf8'
+    return response
     # token = SocialToken.objects.get(account__user=request.user, account__provider='google')
     # print(token)
     # # CLIENT_SECRET_FILE = 'client_secret_51870834106-rtq1bi2n4n6cme450auv0iffv9fpokre.apps.googleusercontent.com.json'

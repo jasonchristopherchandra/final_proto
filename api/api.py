@@ -37,20 +37,13 @@ def translate_view():
 def translate_send():
     request_data = request.get_json()
 
-    author = None
     message = None
 
     if request_data:
-        if 'author' in request_data:
-            author = request_data['author']
-
         if 'message' in request_data:
             message = request_data['message']
 
-    return '''
-           The author value is: {}
-           The message value is: {}
-           The boolean value is: {}'''.format(author,  message)
+    return jsonify({'message':message})
 
 
 app.run()
