@@ -5,17 +5,13 @@
 
 {% load embed_video_tags %}
 
-
-{% video videoDetails.title "large" %}
-
-
-
     <!-- The core Firebase JS SDK is always required and must be listed first -->
 <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-messaging.js"></script>
 <!-- TODO: Add SDKs for Firebase products that you want to use
      https://firebase.google.com/docs/web/setup#available-libraries -->
 <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 <script>
   // Your web app's Firebase configuration
@@ -49,19 +45,45 @@
                     console.log("nyampe sini error")
                 })
                 .then(function (token) {
-                    TokenElem.innerHTML = 'Device token is : <br>' + token;
+                    function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    };
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+                            }
+                        }
+                    });
+                    var a = "{{title}}";
+                    console.log(token);
+                    console.log(a);
+                    console.log("{{csrf_token}}")
+                    // $.ajax({
+                    //     type: "POST",
+                    //     url: "/view_message/",
+                    //     contentType: "application/json",
+                    //     dataType: "json",
+                    //     data: JSON.stringify({"url": a, "token": token,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                    //     success: function(response) {
+                    //         console.log("success");
+                    //     },
+                    //     error: function(response) {
+                    //         console.log(response);
+                    //     }
+                    // });
                 })
                 .catch(function (err) {
-                    ErrElem.innerHTML = ErrElem.innerHTML + '; ' + err;
                     console.log('Unable to get permission to notify.', err);
                 });
             let enableForegroundNotification = true;
             console.log("yesit is")
             messaging.onMessage(function (payload) {
                 console.log('Message received. ', payload);
-                NotisElem.innerHTML =
-                    NotisElem.innerHTML + JSON.stringify(payload);
-
+                
+                MsgElem.innerHTML =
+                    MsgElem.innerHTML + JSON.stringify(payload);
                 // if (enableForegroundNotification) {
                 //     let notification = payload.notification;
                 //     navigator.serviceWorker
@@ -71,15 +93,62 @@
                 //         });
                 // }
             });
+            function translate_send(){
+                function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    };
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+                            }
+                        }
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: "http://localhost:5000/translate_send",
+                        dataType: "json",
+                        data: JSON.stringify({"message": document.getElementById("sendytmessage").innerHTML,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                        xhrFields: {
+                        withCredentials: true
+                        },
+                        crossDomain: true,
+                        contentType: 'application/json; charset=utf-8',
+                        success: function(response) {
+                            console.log("success");
+                            console.log(response);
+                            document.getElementById("sendytmessage").innerHTML = response['message'];
+                        },
+                        error: function(response) {
+                            console.log(response);
+                        }
+                    });
+            };
+
 </script>
 
-<div id="token" style="overflow: auto"></div>
-    <div id="msg"></div>
-    <div id="notis"></div>
-    <div id="err"></div>
-    <script>
-       MsgElem = document.getElementById("msg")
-       TokenElem = document.getElementById("token")
-       NotisElem = document.getElementById("notis")
-       ErrElem = document.getElementById("err")
-    </script>
+<div class="row">
+    <div class="col-9" style = 'float: left;'>{% video videoDetails.title "large" %}</div> <!-- 25% -->
+    <div id ='chatbox'class="col-3">
+        <label>Chatbox</label>
+        <div id="msg" style = 'padding: 15px; width: 20%; height: 500px; overflow: scroll; display:flex; flex-direction:column-reverse;'></div>
+        <script>
+            MsgElem = document.getElementById("msg")
+            var objDiv = document.getElementById("chatbox");
+            objDiv.scrollTop = objDiv.scrollHeight; 
+        </script>
+        <div id = 'send message form'>
+            <form >
+                <textarea id="sendytmessage" name="sendytmessage" rows="4" cols="40">
+                Send message here
+                </textarea>
+                <button type="button" id='translate-button' style = 'margin: 0px;' onclick = 'translate_send()' >Translate message</button>
+                <br><br>
+                <input type="submit" value="Send Message">
+                
+            </form>
+                
+        </div>
+    </div> <!-- 75% -->
+</div>

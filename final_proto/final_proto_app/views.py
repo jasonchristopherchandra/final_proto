@@ -38,9 +38,9 @@ def retrieveURL(request):
         title = str(request.POST.get('URL'))
         print(title)
         print(isinstance(title, str))
-        messages = view_message(title,request)
+        # messages = view_message(title,request)
         videoDetails = {'title':title}
-        context = {'videoDetails': videoDetails, 'chatDetails': messages}
-        print("this is it")
-        print(context)
+        context = {'videoDetails': videoDetails,'title':title}
+        # print("this is it")
+        # print(context)
         return render(request, "viewsend.html",  context)

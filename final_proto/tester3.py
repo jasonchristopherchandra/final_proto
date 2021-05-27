@@ -19,6 +19,7 @@ firebase_admin.initialize_app(cred)
 
 print(str(sys.argv[1]))
 chat = ChatDownloader().get_chat(str(sys.argv[1])) 
+
 # for message in chat:
 #     return chat.format(message)
 # print(chat)      # create a generator
@@ -38,7 +39,7 @@ for message in chat:
     "message": chatlist['message'],
     }
     response = requests.post(url, json=data)
-    registration_token = 'e15J_LHp1VgYaBbIjsnhlD:APA91bG6tx6MzZZyN_rJwjuvujBP2asr2lgBGSMYf3QKBYgpml8aLyHBEVAiVYcY1P-hAPmk5o-6URgvyeRzPVZIJHBtVZ6FEueBLYQGBRHvS8ooFbEDxwWM-2zpCN6Mm6qRXZMoJfbg'
+    registration_token = str(sys.argv[2])
     # See documentation on defining a message payload.
     message = messaging.Message(
         data={

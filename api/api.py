@@ -1,8 +1,9 @@
 from flask import Flask, request, jsonify
-
+from flask_cors import CORS, cross_origin
 import sys
 
 app = Flask(__name__)
+CORS(app, support_credentials=True)
 # app.config["DEBUG"] = True
 
 def translate(str):
@@ -34,6 +35,7 @@ def translate_view():
     return jsonify({'author':author,'message':message,'translated_message':translated_message})
 
 @app.route('/translate_send', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def translate_send():
     request_data = request.get_json()
 
@@ -41,9 +43,9 @@ def translate_send():
 
     if request_data:
         if 'message' in request_data:
-            message = request_data['message']
+            message = "message changed from " + request_data['message'] + " to translated"
 
     return jsonify({'message':message})
 
 
-app.run()
+app.run(host='0.0.0.0', port=5000, debug=True)

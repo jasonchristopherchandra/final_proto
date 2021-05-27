@@ -33,6 +33,8 @@ ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
 DEBUG = True
 
+CSRF_USE_SESSIONS = True
+
 # Application definition
 
 INSTALLED_APPS = [

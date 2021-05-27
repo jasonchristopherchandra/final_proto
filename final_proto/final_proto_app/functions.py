@@ -15,6 +15,7 @@ import shlex
 import requests
 from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
+import json
 
 def extract_video_id(url):
     # Examples:
@@ -97,14 +98,27 @@ def send_message(url, message,request):
 
     # print(response2)
 
-def view_message(url,request):
-    id = extract_video_id(url)
-    print(id)
-    proc = subprocess.Popen(shlex.split('python3 tester3.py ' + str(url)))
+def view_message(request):
+    data = json.loads(request.body.decode('UTF-8'))
+    url = data['url']
+    token = data['token']
+    print(url)
+    print(data)
+    proc = subprocess.Popen(shlex.split('python3 tester3.py ' + str(url) +" "+ str(token)))
     print("is this weird")
 
 def get_translated_messages(url,request):
     proc = subprocess.Popen(shlex.split('python3 tester4.py'))
+
+# def translate_user_message(request):
+#     data1 = json.loads(request.body.decode('UTF-8'))
+#     url = 'http://127.0.0.1:5000/translate_send'
+#     data = {
+#     "message": data1['message'],
+#     }
+#     response = requests.post(url, json=data)
+#     response_tet = "succees call"
+#     return None
 
 
 @csrf_exempt
