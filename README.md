@@ -5,7 +5,7 @@ Bootstrap only or entire framework ?
 BUTTON TO SCROLL RIGHT TO THE BOTTOM OF CHAT BOX IF USER SCROLLS UP
 
 VIEW MESSAGE
-DUPLICATE MESSAGE HANDLING 
+DUPLICATE MESSAGE HANDLING (duplicate api call, fix using current url checking and while loop on subprocess ? very scuffed)
 DISABLE IF VIDEO DOES NOT HV CHATBOX (USE EXCEPT CASE/ IF ERROR TO DISABLE THROUGH specific message (not sure) which can be detected by javascriptJAVASCRIPT (entire procss, first get chat, then use try or except functionality to specify if chat fails send fail message once, if proper url, do normal functionality))
 
 SENDING MESSAGE 
