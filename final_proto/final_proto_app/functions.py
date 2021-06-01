@@ -66,19 +66,20 @@ def send_message(url, message,request):
         id=video_ids
     ).execute()
 
-    print(response)
-    #gets active livechat id and channelid
+    # print(response)
+    # #gets active livechat id and channelid
     channelid = response['items'][0]['snippet']['channelId']
-    # print("this is the channel id: " + response['items'][0]['snippet']['channelId'])
-    # print("you are currently watching " + response['items'][0]['snippet']['title'] + " by: " + response['items'][0]['snippet']['channelTitle'])
-    if response['items'][0]['snippet']['liveBroadcastContent'] == 'none':
-        print("hey this isnt a live stream, checking if this is an archive")
-        chat = ChatDownloader().get_chat(url)       # create a generator
-        for message in chat:
-            print(chat.format(message))     
-        return render(request, 'index.html')
-    else:
-        livechatid = response['items'][0]['liveStreamingDetails']['activeLiveChatId']
+    livechatid = response['items'][0]['liveStreamingDetails']['activeLiveChatId']
+    # # print("this is the channel id: " + response['items'][0]['snippet']['channelId'])
+    # # print("you are currently watching " + response['items'][0]['snippet']['title'] + " by: " + response['items'][0]['snippet']['channelTitle'])
+    # if response['items'][0]['snippet']['liveBroadcastContent'] == 'none':
+    #     print("hey this isnt a live stream, checking if this is an archive")
+    #     chat = ChatDownloader().get_chat(url)       # create a generator
+    #     for message in chat:
+    #         print(chat.format(message))     
+    #     return render(request, 'index.html')
+    # else:
+
     # print("this is the livechat id: " + response['items'][0]['liveStreamingDetails']['activeLiveChatId'])
     #prints out all live chat messages
     # response1 = service.liveChatMessages().list(
@@ -86,20 +87,20 @@ def send_message(url, message,request):
     #         part = 'snippet'
     #     ).execute()
 
-    print(response1)
+    # print(response1)
     #sends out a message to the live chat 
-    # response2 = service.liveChatMessages().insert(
-    #     part = 'snippet',
-    #     body = dict (
-    #         snippet = dict(
-    #             liveChatId = livechatid,
-    #             type = "textMessageEvent",
-    #             textMessageDetails = dict(
-    #                 messageText = message
-    #             )
-    #         )
-    #     )  
-    # ).execute()
+    response2 = service.liveChatMessages().insert(
+        part = 'snippet',
+        body = dict (
+            snippet = dict(
+                liveChatId = livechatid,
+                type = "textMessageEvent",
+                textMessageDetails = dict(
+                    messageText = message
+                )
+            )
+        )  
+    ).execute()
 
     # print(response2)
 

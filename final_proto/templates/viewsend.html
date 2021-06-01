@@ -128,7 +128,54 @@
                         success: function(response) {
                             console.log("success");
                             console.log(response);
-                            document.getElementById("sendytmessage").innerHTML = response['message'];
+                            document.getElementById("translatedytmessage").innerHTML = response['message'];
+                        },
+                        error: function(response) {
+                            console.log(response);
+                        }
+                    });
+            };
+            function send_message(){
+                function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    };
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+                            }
+                        }
+                    });
+                    if($("#translatedytmessage").val().trim().length < 1)
+                    {
+                        if($("#sendytmessage").val().trim().length < 1)
+                        {
+                            alert("Please Enter Text...");
+                            return; 
+                        }
+                        else{
+                            message = document.getElementById("sendytmessage").innerHTML;
+                        };
+                    }
+                    else
+                    {
+                        message = document.getElementById("translatedytmessage").innerHTML;
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/send_message/",
+                        dataType: "json",
+                        data: JSON.stringify({"url":"{{title}}","message": message,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                        xhrFields: {
+                        withCredentials: true
+                        },
+                        crossDomain: true,
+                        contentType: 'application/json; charset=utf-8',
+                        success: function(response) {
+                            console.log("message sent");
+                            console.log(response);
                         },
                         error: function(response) {
                             console.log(response);
@@ -138,20 +185,13 @@
 
             $(window).unload(function(){
                 $.ajax({
-                        type: "POST",
-                        url: "/close_subprocess/",
-                        contentType: "application/json",
-                        dataType: "json",
-                        data: JSON.stringify({"csrfmiddlewaretoken": "{{csrf_token}}" }),
-                        success: function(response) {
-                            console.log("success");
-                        },
-                        error: function(response) {
-                            console.log(response);
-                        }
-                    }); 
+                    type: 'POST',
+                    url: "/close_subprocess/",
+                    async:false,
+                    data: JSON.stringify({"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                });
             });
-
+            
 
 </script>
 
@@ -166,16 +206,12 @@
             objDiv.scrollTop = objDiv.scrollHeight; 
         </script>
         <div id = 'send message form'>
-            <form >
-                <textarea id="sendytmessage" name="sendytmessage" rows="4" cols="40">
-                Send message here
-                </textarea>
-                <textarea id="translatedytmessage" name="translatedytmessage" rows="4" cols="40">
-                    Send message here
-                    </textarea>
+            <form id ='send_message' >
+                <textarea id="sendytmessage" name="sendytmessage" rows="4" cols="40" placeholder="Insert message here"></textarea>
+                <textarea disabled id="translatedytmessage" rows="4" cols="40" placeholder="Translated message will appear here"></textarea>
                 <button type="button" id='translate-button' style = 'margin: 0px;' onclick = 'translate_send()' >Translate message</button>
                 <br><br>
-                <input type="submit" value="Send Message">
+                <button type="button" id='send-button' style = 'margin: 0px;' onclick = 'send_message()' >Send message</button>
                 
             </form>
                 
