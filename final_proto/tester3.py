@@ -54,7 +54,6 @@ for message in chat:
     # registration token.
     response = messaging.send(message)
     # Response is a message ID string.
-    print('Successfully sent message:', response)
 
     time.sleep(0.1)
     # with open('chatlist'+str(sys.argv[1])+'.txt', 'a+') as file:

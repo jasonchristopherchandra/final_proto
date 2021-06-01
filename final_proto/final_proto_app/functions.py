@@ -5,7 +5,7 @@ from googleapiclient.discovery import build
 from google.oauth2.credentials import Credentials
 from allauth.socialaccount.models import SocialToken, SocialApp
 from django.shortcuts import render,redirect
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect,HttpResponse
 from pytchat import LiveChat, CompatibleProcessor
 from chat_downloader import ChatDownloader
 import time
@@ -16,6 +16,11 @@ import requests
 from django.http import StreamingHttpResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
+import os
+import signal
+
+
+subprocess_value = None
 
 def extract_video_id(url):
     # Examples:
@@ -104,11 +109,16 @@ def view_message(request):
     token = data['token']
     print(url)
     print(data)
-    proc = subprocess.Popen(shlex.split('python3 tester3.py ' + str(url) +" "+ str(token)))
+    subprocess_value = subprocess.Popen(shlex.split('python3 tester3.py ' + str(url) +" "+ str(token)))
     print("is this weird")
+    return HttpResponse("subprocess started")
 
 def get_translated_messages(url,request):
     proc = subprocess.Popen(shlex.split('python3 tester4.py'))
+
+def close_subprocess(request):
+    print("yes this function is actually called")
+    subprocess_value.terminate()
 
 # def translate_user_message(request):
 #     data1 = json.loads(request.body.decode('UTF-8'))

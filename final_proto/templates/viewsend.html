@@ -60,19 +60,19 @@
                     console.log(token);
                     console.log(a);
                     console.log("{{csrf_token}}")
-                    // $.ajax({
-                    //     type: "POST",
-                    //     url: "/view_message/",
-                    //     contentType: "application/json",
-                    //     dataType: "json",
-                    //     data: JSON.stringify({"url": a, "token": token,"csrfmiddlewaretoken": "{{csrf_token}}" }),
-                    //     success: function(response) {
-                    //         console.log("success");
-                    //     },
-                    //     error: function(response) {
-                    //         console.log(response);
-                    //     }
-                    // });
+                    $.ajax({
+                        type: "POST",
+                        url: "/view_message/",
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: JSON.stringify({"url": a, "token": token,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                        success: function(response) {
+                            console.log("success");
+                        },
+                        error: function(response) {
+                            console.log(response);
+                        }
+                    });
                 })
                 .catch(function (err) {
                     console.log('Unable to get permission to notify.', err);
@@ -81,10 +81,20 @@
             console.log("yesit is")
             messaging.onMessage(function (payload) {
                 console.log('Message received. ', payload);
-                
+                function sleep(milliseconds) {
+                const date = Date.now();
+                let currentDate = null;
+                do {
+                    currentDate = Date.now();
+                } while (currentDate - date < milliseconds);
+                }
+                var mybr = document.createElement('br');
+
                 MsgElem.innerHTML =
-                    MsgElem.innerHTML + JSON.stringify(payload);
-                // if (enableForegroundNotification) {
+                    MsgElem.innerHTML + "Author: "+ JSON.stringify(payload['data']['author'])+", " + "message: " + JSON.stringify(payload['data']['message']);
+                    MsgElem.appendChild(mybr);
+                    sleep(2000);
+                    // if (enableForegroundNotification) {
                 //     let notification = payload.notification;
                 //     navigator.serviceWorker
                 //         .getRegistrations()
@@ -126,6 +136,23 @@
                     });
             };
 
+            $(window).unload(function(){
+                $.ajax({
+                        type: "POST",
+                        url: "/close_subprocess/",
+                        contentType: "application/json",
+                        dataType: "json",
+                        data: JSON.stringify({"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                        success: function(response) {
+                            console.log("success");
+                        },
+                        error: function(response) {
+                            console.log(response);
+                        }
+                    }); 
+            });
+
+
 </script>
 
 <div class="row">
@@ -143,6 +170,9 @@
                 <textarea id="sendytmessage" name="sendytmessage" rows="4" cols="40">
                 Send message here
                 </textarea>
+                <textarea id="translatedytmessage" name="translatedytmessage" rows="4" cols="40">
+                    Send message here
+                    </textarea>
                 <button type="button" id='translate-button' style = 'margin: 0px;' onclick = 'translate_send()' >Translate message</button>
                 <br><br>
                 <input type="submit" value="Send Message">
