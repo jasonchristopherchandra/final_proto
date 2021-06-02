@@ -19,6 +19,8 @@
   // server key AAAAFekyACM:APA91bHOZF1RpfDGiPhjwGwR8Uib_XTAFSe2sanZUid8C9eh6VQTXcJczxjyltoG3IOq9sm3x-rO6n6IPq6Vl1MHm843BhSY4GugXb8eHko0ZdrMJ_bwWIa3t2daCzadxJ_OCeFg19Ee
   // sender id 94106681379
   
+  
+
   Notification.requestPermission().then(function(result) {
     console.log("teststs")
   console.log(result);
@@ -183,14 +185,6 @@
                     });
             };
 
-            $(window).unload(function(){
-                $.ajax({
-                    type: 'POST',
-                    url: "/close_subprocess/",
-                    async:false,
-                    data: JSON.stringify({"csrfmiddlewaretoken": "{{csrf_token}}" }),
-                });
-            });
             
 
 </script>

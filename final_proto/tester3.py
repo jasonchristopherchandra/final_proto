@@ -28,7 +28,6 @@ print(type(chat))
 def give_emoji_free_text(text):
     return emoji.get_emoji_regexp().sub(r'', text)
 
-
 for message in chat:
     chatlist  = { }                      # iterate over messages
     chatlist['author'] = message['author']['name'].encode("ascii", errors="ignore").decode()
