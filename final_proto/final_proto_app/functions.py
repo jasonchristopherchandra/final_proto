@@ -38,8 +38,45 @@ def extract_video_id(url):
     # fail?
     return None
 
+def check_active_livechat(url, request):
+    id = extract_video_id(url)
+    print(id)
+    token = SocialToken.objects.get(account__user=request.user, account__provider='google')
+    print(token)
+    # CLIENT_SECRET_FILE = 'client_secret_51870834106-rtq1bi2n4n6cme450auv0iffv9fpokre.apps.googleusercontent.com.json'
+    # flow = InstalledAppFlow.from_client_secrets_file(CLIENT_SECRET_FILE, SCOPES)
+    credentials = Credentials(
+        token=token.token,
+        refresh_token=token.token_secret,
+        token_uri='https://oauth2.googleapis.com/token',
+        client_id='375686044917-4ip2r585igrkf6kesp3ggmfd45f53433.apps.googleusercontent.com', # replace with yours 
+        client_secret='HZgBiq-fG0_vrfsxHHNA7Ptu') # replace with yours 
+    print("secret token:"+ " "+credentials.refresh_token)
+    service = build('youtube', 'v3', credentials=credentials)
+    print(service)
+    
 
-def send_message(url, message,request):
+    part_string = 'snippet,liveStreamingDetails'
+    video_ids = id
+    #find data using API regarding video
+
+    response = service.videos().list(
+        part=part_string,
+        id=video_ids
+    ).execute()
+    try:
+        print(response['items'][0]['liveStreamingDetails']['activeLiveChatId'])
+        livechatstatus = 'alive'
+        return livechatstatus
+    except:
+        livechatstatus = 'dead'
+        return livechatstatus
+    return livechatstatus
+
+def send_message(request):
+    data = json.loads(request.body.decode('UTF-8'))
+    url = data['url']
+    message = data['message']
     id = extract_video_id(url)
     print(id)
     token = SocialToken.objects.get(account__user=request.user, account__provider='google')

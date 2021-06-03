@@ -19,13 +19,17 @@
   // server key AAAAFekyACM:APA91bHOZF1RpfDGiPhjwGwR8Uib_XTAFSe2sanZUid8C9eh6VQTXcJczxjyltoG3IOq9sm3x-rO6n6IPq6Vl1MHm843BhSY4GugXb8eHko0ZdrMJ_bwWIa3t2daCzadxJ_OCeFg19Ee
   // sender id 94106681379
   
-  
+//   window.onload =function(){
+//     button1 = document.getElementById("translate-button")
+//     button2 = document.getElementById("send-button")
+//     textarea1 = document.getElementById("sendytmessage").disabled = true;
+//     check_livechat();
+//   } 
 
   Notification.requestPermission().then(function(result) {
     console.log("teststs")
   console.log(result);
 });
-
   var config = {
         messagingSenderId: "94106681379",
         apiKey: "AIzaSyC3ulOqdD4me7DZf_bu1yNomPDIx335QZg",
@@ -38,7 +42,6 @@
   const messaging = firebase.messaging();
         Notification.requestPermission()
                 .then(function () {
-                    MsgElem.innerHTML = 'Notification permission granted.';
                     console.log('Notification permission granted.');
 
                     // get the token in the form of promise
@@ -82,7 +85,7 @@
             let enableForegroundNotification = true;
             console.log("yesit is")
             messaging.onMessage(function (payload) {
-                console.log('Message received. ', payload);
+                // console.log('Message received. ', payload);
                 function sleep(milliseconds) {
                 const date = Date.now();
                 let currentDate = null;
@@ -91,19 +94,17 @@
                 } while (currentDate - date < milliseconds);
                 }
                 var mybr = document.createElement('br');
-
-                MsgElem.innerHTML =
+                // console.log(JSON.stringify(payload['data']['message']))
+                if (JSON.stringify(payload['data']['message']) == '"VIDEO IS NOT A LIVE STREAM"') {
+                    document.getElementById("translate-button").disabled = true;
+                    document.getElementById("send-button").disabled = true;
+                    document.getElementById("sendytmessage").disabled = true;
+                } else {
+                    MsgElem.innerHTML =
                     MsgElem.innerHTML + "Author: "+ JSON.stringify(payload['data']['author'])+", " + "message: " + JSON.stringify(payload['data']['message']);
                     MsgElem.appendChild(mybr);
-                    sleep(2000);
-                    // if (enableForegroundNotification) {
-                //     let notification = payload.notification;
-                //     navigator.serviceWorker
-                //         .getRegistrations()
-                //         .then((registration) => {
-                //             registration[0].showNotification(notification.title);
-                //         });
-                // }
+                }
+
             });
             function translate_send(){
                 function csrfSafeMethod(method) {
@@ -121,7 +122,7 @@
                         type: "POST",
                         url: "http://localhost:5000/translate_send",
                         dataType: "json",
-                        data: JSON.stringify({"message": document.getElementById("sendytmessage").innerHTML,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                        data: JSON.stringify({"message": document.getElementById("sendytmessage").value,"csrfmiddlewaretoken": "{{csrf_token}}" }),
                         xhrFields: {
                         withCredentials: true
                         },
@@ -138,17 +139,17 @@
                     });
             };
             function send_message(){
-                function csrfSafeMethod(method) {
-                        // these HTTP methods do not require CSRF protection
-                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                    };
-                    $.ajaxSetup({
-                        beforeSend: function(xhr, settings) {
-                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                                xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-                            }
-                        }
-                    });
+                // function csrfSafeMethod(method) {
+                //         // these HTTP methods do not require CSRF protection
+                //         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                //     };
+                //     $.ajaxSetup({
+                //         beforeSend: function(xhr, settings) {
+                //             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                //                 xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+                //             }
+                //         }
+                //     });
                     if($("#translatedytmessage").val().trim().length < 1)
                     {
                         if($("#sendytmessage").val().trim().length < 1)
@@ -157,12 +158,13 @@
                             return; 
                         }
                         else{
-                            message = document.getElementById("sendytmessage").innerHTML;
+                            message = document.getElementById("sendytmessage").value;
+                            console.log(message)
                         };
                     }
                     else
                     {
-                        message = document.getElementById("translatedytmessage").innerHTML;
+                        message = document.getElementById("translatedytmessage").value;
                     };
 
                     $.ajax({
@@ -170,27 +172,35 @@
                         url: "/send_message/",
                         dataType: "json",
                         data: JSON.stringify({"url":"{{title}}","message": message,"csrfmiddlewaretoken": "{{csrf_token}}" }),
-                        xhrFields: {
-                        withCredentials: true
-                        },
-                        crossDomain: true,
                         contentType: 'application/json; charset=utf-8',
                         success: function(response) {
-                            console.log("message sent");
-                            console.log(response);
+                            alert("Message sent successfully");
                         },
                         error: function(response) {
                             console.log(response);
                         }
                     });
             };
+            function check_livechat(){
+                console.log("{{livechatstatus}}");
+                if ("{{livechatstatus}}" == "alive"){
+                    document.getElementById("translate-button").disabled = false;
+                    document.getElementById("send-button").disabled = false;
+                    document.getElementById("sendytmessage").disabled = false;
+                }
+                else if ("{{livechatstatus}}" == "dead"){
+                    document.getElementById("translate-button").disabled = true;
+                    document.getElementById("send-button").disabled = true;
+                    document.getElementById("sendytmessage").disabled = true;
+                }
+            }
 
             
 
 </script>
 
-<div class="row">
-    <div class="col-9" style = 'float: left;'>{% video videoDetails.title "large" %}</div> <!-- 25% -->
+<div class="row" >
+    <div class="col-9" style = 'float: left;'>{% video title "large" %}</div> <!-- 25% -->
     <div id ='chatbox'class="col-3">
         <label>Chatbox</label>
         <div id="msg" style = 'padding: 15px; width: 20%; height: 500px; overflow: scroll; display:flex; flex-direction:column-reverse;'></div>
@@ -200,14 +210,11 @@
             objDiv.scrollTop = objDiv.scrollHeight; 
         </script>
         <div id = 'send message form'>
-            <form id ='send_message' >
                 <textarea id="sendytmessage" name="sendytmessage" rows="4" cols="40" placeholder="Insert message here"></textarea>
                 <textarea disabled id="translatedytmessage" rows="4" cols="40" placeholder="Translated message will appear here"></textarea>
                 <button type="button" id='translate-button' style = 'margin: 0px;' onclick = 'translate_send()' >Translate message</button>
                 <br><br>
                 <button type="button" id='send-button' style = 'margin: 0px;' onclick = 'send_message()' >Send message</button>
-                
-            </form>
                 
         </div>
     </div> <!-- 75% -->

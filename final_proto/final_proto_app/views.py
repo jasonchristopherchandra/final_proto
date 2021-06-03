@@ -2,7 +2,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 
 from .forms import YTForm
-from .functions import send_message,view_message
+from .functions import send_message,view_message,check_active_livechat
 
 
 import pytchat 
@@ -38,9 +38,9 @@ def retrieveURL(request):
         title = str(request.POST.get('URL'))
         print(title)
         print(isinstance(title, str))
-        # messages = view_message(title,request)
+        livechatstatus = check_active_livechat(title,request)
         videoDetails = {'title':title}
-        context = {'videoDetails': videoDetails,'title':title}
+        context = {'title':title,'livechatstatus':livechatstatus}
         # print("this is it")
         # print(context)
         return render(request, "viewsend.html",  context)
