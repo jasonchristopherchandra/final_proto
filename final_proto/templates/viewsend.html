@@ -18,6 +18,8 @@
       check_livechat();
     };
   
+    
+
     Notification.requestPermission().then(function(result) {
       console.log("teststs")
     console.log(result);
@@ -57,19 +59,36 @@
                       console.log(token);
                       console.log(a);
                       console.log("{{csrf_token}}")
-                      $.ajax({
-                          type: "POST",
-                          url: "/view_message/",
-                          contentType: "application/json",
-                          dataType: "json",
-                          data: JSON.stringify({"url": a, "token": token,"csrfmiddlewaretoken": "{{csrf_token}}" }),
-                          success: function(response) {
-                              console.log("success");
-                          },
-                          error: function(response) {
-                              console.log(response);
-                          }
-                      });
+                      var loc = window.location;
+                      var wsStart = 'ws://';
+                    if (loc.protocol == 'https:') {
+                        wsStart = 'wss://'
+                    }
+                    var endpoint = wsStart + loc.host + '/start_chat/'
+
+                    var socket = new WebSocket(endpoint);
+                    var datainit = JSON.stringify({"url": a, "token": token});
+                    if (socket.readyState === 1) {
+        socket.send(datainit);
+    } else {
+
+        setTimeout(function () {
+            socket.send(datainit);
+        }, 2000);
+    };
+                    //   $.ajax({
+                    //       type: "POST",
+                    //       url: "/view_message/",
+                    //       contentType: "application/json",
+                    //       dataType: "json",
+                    //       data: JSON.stringify({"url": a, "token": token,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                    //       success: function(response) {
+                    //           console.log("success");
+                    //       },
+                    //       error: function(response) {
+                    //           console.log(response);
+                    //       }
+                    //   });
                   })
                   .catch(function (err) {
                       console.log('Unable to get permission to notify.', err);

@@ -13,6 +13,9 @@ cur_path = os.path.dirname(__file__)
 print(cur_path)
 
 new_path = os.path.join(cur_path, 'static', "chatlist.txt")
+print('reached')
+
+print(str(sys.argv[1:]))
 
 cred = credentials.Certificate("chattranslator-2c03a-firebase-adminsdk-8554s-175f86d014.json")
 firebase_admin.initialize_app(cred)

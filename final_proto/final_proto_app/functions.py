@@ -143,11 +143,15 @@ def send_message(request):
 
 def view_message(request):
     data = json.loads(request.body.decode('UTF-8'))
+    print(data)
     url = data['url']
     token = data['token']
     print(url)
     print(data)
-    subprocess_value = subprocess.Popen(shlex.split('python3 tester3.py ' + str(url) +" "+ str(token)))
+    function_call = 'python3 tester3.py ' + str(url) +" "+ str(token)
+    print("this is the function call " + function_call)
+    # subprocess_value = subprocess.Popen(shlex.split('python3 tester3.py ' + str(url) +" "+ str(token)))
+
     print("is this weird")
     return HttpResponse("subprocess started")
 

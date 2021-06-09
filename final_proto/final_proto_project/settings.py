@@ -31,11 +31,13 @@ SECRET_KEY = 'au9wrgw#w!7^ztn*thhl5$c%uw(tb!)t_f6s2sb$w8c12e&flg'
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
 
-DEBUG = True
+DEBUG = False
 
 CSRF_USE_SESSIONS = True
 
 # Application definition
+
+
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -52,6 +54,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount.providers.google',
     'embed_video',
     'bootstrap4',
+    'channels'
 ]
 
 MIDDLEWARE = [
@@ -84,6 +87,7 @@ TEMPLATES = [
 SECURE_REFERRER_POLICY = "no-referrer-when-downgrade"
 
 WSGI_APPLICATION = 'final_proto_project.wsgi.application'
+ASGI_APPLICATION = "final_proto_project.asgi.application"
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
