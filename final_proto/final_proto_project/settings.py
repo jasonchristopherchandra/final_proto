@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.google',
     'embed_video',
+    'bootstrap4',
 ]
 
 MIDDLEWARE = [

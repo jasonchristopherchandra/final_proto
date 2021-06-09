@@ -1,9 +1,15 @@
 {% load socialaccount %}
+{% load static %}
 <html>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+
 <body>
-    {% include "navbar.html" %}
+    <img src="{% static 'images/404.PNG' %}" alt="Example Image" class = 'float-right'style='max-height:600px; max-width:500px;'/>
+    <br>
+    <br>
+    <br>
 <h1>Error 404</h1>
-<h3>Return to previous page through  <a>here</a> </h3>
+<h3>  <a href="/">Go Back</a> </h3>
 
 </body>
 </html>

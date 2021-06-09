@@ -160,7 +160,7 @@ def close_subprocess(request):
 
 # def translate_user_message(request):
 #     data1 = json.loads(request.body.decode('UTF-8'))
-#     url = 'http://127.0.0.1:5000/translate_send'
+#     url = 'http://localhost:5000/translate_send'
 #     data = {
 #     "message": data1['message'],
 #     }

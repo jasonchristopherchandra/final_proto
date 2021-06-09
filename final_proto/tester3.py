@@ -24,7 +24,7 @@ try:
         chatlist  = { }                      # iterate over messages
         chatlist['author'] = message['author']['name'].encode("ascii", errors="ignore").decode()
         chatlist['message'] = message['message'].encode("ascii", errors="ignore").decode()
-        url = 'http://127.0.0.1:5000/translate_view'
+        url = 'http://localhost:5000/translate_view'
         data = {
         "author": chatlist['author'],
         "message": chatlist['message'],
@@ -43,12 +43,16 @@ try:
 
         # Send a message to the device corresponding to the provided
         # registration token.
+        time.sleep(1.5)
         response = messaging.send(message)
     # Response is a message ID string.
 
     time.sleep(0.1)
-except:
+except Exception as inst:
     print("An exception occurred")
+    print(type(inst))    # the exception instance
+    print(inst.args)     # arguments stored in .args
+    print(inst)    
     registration_token = str(sys.argv[2])
     message = messaging.Message(
         data={
