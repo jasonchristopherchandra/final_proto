@@ -206,6 +206,26 @@
                       document.getElementById("sendytmessage").disabled = true;
                   }
               };
+              
+              var mybutton = document.getElementById("myBtn");
+              var MsgElem = document.getElementById("msg") 
+
+// When the user scrolls down 20px from the top of the document, show the button
+MsgElem.onscroll = function() {scrollFunction()};
+
+function scrollFunction() {
+  if (MsgElem.body.scrollTop > 20 || MsgElem.documentElement.scrollTop > 20) {
+    mybutton.style.display = "block";
+  } else {
+    mybutton.style.display = "none";
+  }
+}
+
+// When the user clicks on the button, scroll to the top of the document
+function topFunction() {
+  document.body.scrollTop = 0;
+  document.documentElement.scrollTop = 0;
+}
   
               </script>   
   
@@ -222,18 +242,18 @@
 padding:0;
 overflow-x:hidden;" >
     <div class="col-8" style = 'float: left;'>{% video title "medium" %}</div> <!-- 25% -->
-    <div id ='chatbox'class="col-4 align-middle">
+    <div id ='chatbox'class="col-4 align-middle" >
         
  <br>
 
         <h5 class='bg-danger text-center' style='height:30px;'>Chatbox</h5>
-        <br>
-        <div id="msg" style = 'padding: 15px; width: 600px; height: 500px; overflow: scroll; display:flex; flex-direction:column-reverse;'></div>
+        <div id="msg" class='border border-dark' style = 'margin-right: 15px; width: 600px; height: 500px; overflow: scroll; display:flex; flex-direction:column-reverse;' ></div>
         <script>
             MsgElem = document.getElementById("msg")
             var objDiv = document.getElementById("chatbox");
             objDiv.scrollTop = objDiv.scrollHeight; 
         </script>
+        <button onclick="topFunction()" id="myBtn"  class ='btn-light' title="Go to top">Top</button>
         <div id = 'send message form'>
                 <textarea id="sendytmessage" name="sendytmessage" rows="4" cols="40" placeholder="Insert message here"></textarea>
                 <textarea disabled id="translatedytmessage" rows="4" cols="40" placeholder="Translated message will appear here"></textarea>
