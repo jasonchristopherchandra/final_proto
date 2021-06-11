@@ -1,0 +1,258 @@
+<html>
+    <head>
+        {% load embed_video_tags %}
+        <title>ChatTranslator</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+        <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/7.16.1/firebase-messaging.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/8.6.2/firebase-analytics.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script>
+            window.onload =function(){
+                button1 = document.getElementById("translate-button")
+                button2 = document.getElementById("send-button")
+                textarea1 = document.getElementById("sendytmessage").disabled = true;
+                check_livechat();
+            };
+
+            Notification.requestPermission().then(function(result) {
+                console.log("teststs")
+                console.log(result);
+            });
+            var config = {
+                messagingSenderId: "94106681379",
+                apiKey: "AIzaSyC3ulOqdD4me7DZf_bu1yNomPDIx335QZg",
+                projectId: "chattranslator-2c03a",
+                appId: "1:94106681379:web:e2b7ac5596fd4226943196",
+            };
+            firebase.initializeApp(config);
+            console.log("made it baybee firebase js online ");  
+        
+            const messaging = firebase.messaging();
+                Notification.requestPermission()
+                    .then(function () {
+                        console.log('Notification permission granted.');
+    
+                        // get the token in the form of promise
+                        console.log("nyampe sini blm")
+                        return messaging.getToken();
+                        console.log("nyampe sini error")
+                    })
+                    .then(function (token) {
+                        function csrfSafeMethod(method) {
+                            // these HTTP methods do not require CSRF protection
+                            return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                        };
+                        $.ajaxSetup({
+                            beforeSend: function(xhr, settings) {
+                                if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                    xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+                                }
+                            }
+                        });
+                        var a = "{{title}}";
+                        console.log(token);
+                        console.log(a);
+                        console.log("{{csrf_token}}")
+                        var loc = window.location;
+                        var wsStart = 'ws://';
+                        if (loc.protocol == 'https:') {
+                            wsStart = 'wss://'
+                        }
+                        var endpoint = wsStart + loc.host + '/start_chat/'
+
+                        var socket = new WebSocket(endpoint);
+                        var datainit = JSON.stringify({"url": a, "token": token});
+                        if (socket.readyState === 1) {
+                            socket.send(datainit);
+                        } else {
+                            setTimeout(function () {
+                                socket.send(datainit);
+                            }, 2000);
+                        };
+                    //   $.ajax({
+                    //       type: "POST",
+                    //       url: "/view_message/",
+                    //       contentType: "application/json",
+                    //       dataType: "json",
+                    //       data: JSON.stringify({"url": a, "token": token,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                    //       success: function(response) {
+                    //           console.log("success");
+                    //       },
+                    //       error: function(response) {
+                    //           console.log(response);
+                    //       }
+                    //   });
+                })
+                .catch(function (err) {
+                    console.log('Unable to get permission to notify.', err);
+                });
+            let enableForegroundNotification = true;
+            console.log("yesit is")
+            messaging.onMessage(function (payload) {
+                // console.log('Message received. ', payload);
+                function sleep(milliseconds) {
+                const date = Date.now();
+                let currentDate = null;
+                do {
+                    currentDate = Date.now();
+                } while (currentDate - date < milliseconds);
+                }
+                var mybr = document.createElement('br');
+                var myhr = document.createElement('hr');
+                // console.log(JSON.stringify(payload['data']['message']))
+                if (JSON.stringify(payload['data']['message']) == '"VIDEO IS NOT A LIVE STREAM"') {
+                    document.getElementById("translate-button").disabled = true;
+                    document.getElementById("send-button").disabled = true;
+                    document.getElementById("sendytmessage").disabled = true;
+                } else {
+                    setTimeout(function(){ MsgElem.innerHTML =
+                    MsgElem.innerHTML + "Author: "+ JSON.stringify(payload['data']['author'])+", " + "message: " + JSON.stringify(payload['data']['message']);
+                    MsgElem.appendChild(mybr);MsgElem.appendChild(myhr); }, 1000);
+                    
+                }
+
+            });
+            function translate_send(){
+                function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                };
+                $.ajaxSetup({
+                    beforeSend: function(xhr, settings) {
+                        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                            xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+                        }
+                    }
+                });
+                $.ajax({
+                    type: "POST",
+                    url: "http://localhost:5000/translate_send",
+                    dataType: "json",
+                    data: JSON.stringify({"message": document.getElementById("sendytmessage").value,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                    xhrFields: {
+                    withCredentials: true
+                    },
+                    crossDomain: true,
+                    contentType: 'application/json; charset=utf-8',
+                    success: function(response) {
+                        console.log("success");
+                        console.log(response);
+                        document.getElementById("translatedytmessage").innerHTML = response['message'];
+                    },
+                    error: function(response) {
+                        console.log(response);
+                        alert("Oh no, something went wrong with translating your message");
+                    }
+                });
+            };
+            function send_message(){
+                // function csrfSafeMethod(method) {
+                //         // these HTTP methods do not require CSRF protection
+                //         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                //     };
+                //     $.ajaxSetup({
+                //         beforeSend: function(xhr, settings) {
+                //             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                //                 xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+                //             }
+                //         }
+                //     });
+                    if($("#translatedytmessage").val().trim().length < 1)
+                    {
+                        if($("#sendytmessage").val().trim().length < 1)
+                        {
+                            alert("Please Enter Text...");
+                            return; 
+                        }
+                        else{
+                            message = document.getElementById("sendytmessage").value;
+                            console.log(message)
+                        };
+                    }
+                    else
+                    {
+                        message = document.getElementById("translatedytmessage").value;
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/send_message/",
+                        dataType: "json",
+                        data: JSON.stringify({"url":"{{title}}","message": message,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                        contentType: 'application/json; charset=utf-8',
+                        success: function(response) {
+                            alert("Message sent successfully");
+                            document.getElementById("sendytmessage").innerHTML = "";
+                            document.getElementById("translatedytmessage").innerHTML = "";
+                        },
+                        error: function(response) {
+                            console.log(response);
+                            alert("Oh no something went wrong with sending your message");
+                        }
+                    });
+            };
+            function check_livechat(){
+                console.log("{{livechatstatus}}");
+                if ("{{livechatstatus}}" == "alive"){
+                    document.getElementById("translate-button").disabled = false;
+                    document.getElementById("send-button").disabled = false;
+                    document.getElementById("sendytmessage").disabled = false;
+                }
+                else if ("{{livechatstatus}}" == "dead"){
+                    document.getElementById("translate-button").disabled = true;
+                    document.getElementById("send-button").disabled = true;
+                    document.getElementById("sendytmessage").disabled = true;
+                }
+            };
+            
+            var mybutton = document.getElementById("myBtn");
+            var MsgElem = document.getElementById("msg") 
+
+            // When the user scrolls down 20px from the top of the document, show the button
+            MsgElem.onscroll = function() {scrollFunction()};
+
+            function scrollFunction() {
+            if (MsgElem.body.scrollTop > 20 || MsgElem.documentElement.scrollTop > 20) {
+                mybutton.style.display = "block";
+            } else {
+                mybutton.style.display = "none";
+            }
+            }
+
+            // When the user clicks on the button, scroll to the top of the document
+            function topFunction() {
+                var objDiv = document.getElementById("chatbox");
+                objDiv.scrollTop = objDiv.scrollHeight; 
+            }
+            var objDiv = document.getElementById("chatbox");
+            objDiv.scrollTop = objDiv.scrollHeight; 
+        </script>   
+    </head>
+    <body style = 'margin:0;padding:0;'>
+        <div style='max-height:10%;margin-bottom: 10px;'>
+            {% include "navbar.html" %}
+        </div>
+        <div class="row h-90 w-100 " style = "margin:0;padding:0;overflow-x:hidden;height:90%;" >
+            <div class="col-8" style="margin-right:0px;">
+                {% video title "100%x100%" %}
+            </div> 
+            <div id ='chatbox'class="col-4">    
+                <h5 class='bg-danger text-center' style='height:30px;width: 425px;margin-right:0;padding-right:0;margin-bottom:0px;'>Chatbox</h5>
+                <div id="msg" class='border border-dark' style = ' padding-top:0px;width: 425px; height: 500px; overflow: scroll; display:flex; flex-direction:column-reverse;margin-right:0;padding-right:0;' ></div>
+                <script>
+                    MsgElem = document.getElementById("msg")
+                    var objDiv = document.getElementById("chatbox");
+                    objDiv.scrollTop = objDiv.scrollHeight; 
+                </script>
+                <!-- <button onclick="topFunction()" id="myBtn"  class ='btn-light' title="Go to top">Top</button> -->
+                <div id = 'send message form' style='width:425px;margin-right:0;padding-right:0;'>
+                        <textarea id="sendytmessage" name="sendytmessage" rows="4" cols="25" placeholder="Insert message here"></textarea>
+                        <textarea disabled id="translatedytmessage" rows="4" cols="25" placeholder="Translated message will appear here"></textarea>
+                        <button type="button" id='translate-button' style = 'margin: 0px;' onclick = 'translate_send()' >Translate message</button>
+                        <button type="button" id='send-button' style = 'margin: 0px;' onclick = 'send_message()' >Send message</button>  
+                </div>
+            </div> 
+        </div>
+    </body>
+</html>
