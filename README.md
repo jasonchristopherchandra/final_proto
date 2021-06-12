@@ -17,9 +17,9 @@ alert user if sent message, clear the textarea (testing phase)
 
 seperate each message with line (testing )
 
-do are you sure checking 
+do are you sure checking (testing)
 
-make sure error page handling works
+make sure error page handling works (testing)
 
 
 testing site https://www.youtube.com/watch?v=5qap5aO4i9A

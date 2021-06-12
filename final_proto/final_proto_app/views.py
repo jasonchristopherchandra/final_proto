@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
+from django.contrib import messages
 from .forms import YTForm
 from .functions import send_message,view_message,check_active_livechat
 
@@ -36,6 +36,9 @@ def retrieveURL(request):
     context = {}
     if request.method == "POST":
         title = str(request.POST.get('URL'))
+        if title == '':
+            messages.warning(request, 'Please enter url !')
+            return render(request, 'enter_url.html')
         print(title)
         print(isinstance(title, str))
         livechatstatus = check_active_livechat(title,request)

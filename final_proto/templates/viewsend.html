@@ -125,11 +125,20 @@
                         }
                     }
                 });
+                if($("#sendytmessage").val().trim().length < 1)
+                {
+                    alert("Please Enter Text...");
+                    return; 
+                }
+                else{
+                    message = document.getElementById("sendytmessage").value;
+                    console.log(message)
+                };
                 $.ajax({
                     type: "POST",
                     url: "http://localhost:5000/translate_send",
                     dataType: "json",
-                    data: JSON.stringify({"message": document.getElementById("sendytmessage").value,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                    data: JSON.stringify({"message": message,"csrfmiddlewaretoken": "{{csrf_token}}" }),
                     xhrFields: {
                     withCredentials: true
                     },
@@ -147,19 +156,21 @@
                 });
             };
             function send_message(){
-                // function csrfSafeMethod(method) {
-                //         // these HTTP methods do not require CSRF protection
-                //         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                //     };
-                //     $.ajaxSetup({
-                //         beforeSend: function(xhr, settings) {
-                //             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                //                 xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-                //             }
-                //         }
-                //     });
+                function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    };
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+                            }
+                        }
+                    });
+                    console.log('hey');
                     if($("#translatedytmessage").val().trim().length < 1)
                     {
+                        console.log('translated checking');
                         if($("#sendytmessage").val().trim().length < 1)
                         {
                             alert("Please Enter Text...");
@@ -174,23 +185,29 @@
                     {
                         message = document.getElementById("translatedytmessage").value;
                     };
-
-                    $.ajax({
-                        type: "POST",
-                        url: "/send_message/",
-                        dataType: "json",
-                        data: JSON.stringify({"url":"{{title}}","message": message,"csrfmiddlewaretoken": "{{csrf_token}}" }),
-                        contentType: 'application/json; charset=utf-8',
-                        success: function(response) {
-                            alert("Message sent successfully");
-                            document.getElementById("sendytmessage").innerHTML = "";
-                            document.getElementById("translatedytmessage").innerHTML = "";
-                        },
-                        error: function(response) {
-                            console.log(response);
-                            alert("Oh no something went wrong with sending your message");
-                        }
-                    });
+                    if (window.confirm("Are you sure?")) {
+                        $.ajax({
+                            type: "POST",
+                            url: "/send_message/",
+                            dataType: "json",
+                            data: JSON.stringify({"url":"{{title}}","message": message,"csrfmiddlewaretoken": "{{csrf_token}}" }),
+                            contentType: 'application/json; charset=utf-8',
+                            success: function(response) {
+                                alert("Message sent successfully");
+                                document.getElementById('sendytmessage').value = ''
+                                document.getElementById("translatedytmessage").value = "";
+                            },
+                            error: function(response) {
+                                console.log(response);
+                                alert("Oh no something went wrong with sending your message");
+                            }
+                        });
+                    }
+                    else{
+                        alert("Ok");
+                        return; 
+                    }
+                    
             };
             function check_livechat(){
                 console.log("{{livechatstatus}}");
@@ -249,8 +266,8 @@
                 <div id = 'send message form' style='width:425px;margin-right:0;padding-right:0;'>
                         <textarea id="sendytmessage" name="sendytmessage" rows="4" cols="25" placeholder="Insert message here"></textarea>
                         <textarea disabled id="translatedytmessage" rows="4" cols="25" placeholder="Translated message will appear here"></textarea>
-                        <button type="button" id='translate-button' style = 'margin: 0px;' onclick = 'translate_send()' >Translate message</button>
-                        <button type="button" id='send-button' style = 'margin: 0px;' onclick = 'send_message()' >Send message</button>  
+                        <button type="button" id='translate-button' class="btn btn-secondary" style = 'margin: 0px;' onclick = 'translate_send()' >Translate message</button>
+                        <button type="button" id='send-button' class="btn btn-success" style = 'margin: 0px;' onclick = 'send_message()' >Send message</button>  
                 </div>
             </div> 
         </div>

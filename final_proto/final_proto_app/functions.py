@@ -18,6 +18,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 import os
 import signal
+from django.http import JsonResponse
 
 
 subprocess_value = None
@@ -79,6 +80,7 @@ def send_message(request):
     message = data['message']
     id = extract_video_id(url)
     print(id)
+    print(message)
     token = SocialToken.objects.get(account__user=request.user, account__provider='google')
     print(token)
     # CLIENT_SECRET_FILE = 'client_secret_51870834106-rtq1bi2n4n6cme450auv0iffv9fpokre.apps.googleusercontent.com.json'
@@ -138,7 +140,7 @@ def send_message(request):
             )
         )  
     ).execute()
-
+    return JsonResponse({'success':'message sent '},status=200)
     # print(response2)
 
 def view_message(request):
@@ -152,8 +154,8 @@ def view_message(request):
     print("this is the function call " + function_call)
     # subprocess_value = subprocess.Popen(shlex.split('python3 tester3.py ' + str(url) +" "+ str(token)))
 
-    print("is this weird")
-    return HttpResponse("subprocess started")
+    print("is this weird") 
+    return JsonResponse({'success':'subprocess started'},status=200)
 
 def get_translated_messages(url,request):
     proc = subprocess.Popen(shlex.split('python3 tester4.py'))
