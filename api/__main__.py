@@ -22,63 +22,75 @@ import sys; sys.argv=['']; del sys
 
 app = Flask(__name__)
 CORS(app, support_credentials=True)
-# bidirectional = True
-# if bidirectional:
-# 	directions = 2
-# else:
-# 	directions = 1
+bidirectional = True
+if bidirectional:
+	directions = 2
+else:
+	directions = 1
 
-# # number of layers in both the Encoder and Decoder
-# layers = 2
+# number of layers in both the Encoder and Decoder
+layers = 2
 
-# # Hidden size of the Encoder and Decoder
-# hidden_size = 600
+# Hidden size of the Encoder and Decoder
+hidden_size = 600
 
-# # Dropout value for Encoder and Decoder
-# dropout = 0.7
+# Dropout value for Encoder and Decoder
+dropout = 0.6
 
-# # LOAD CONFIGURATIONS
+# LOAD CONFIGURATIONS
 
-# # Set the common name of the loading files
-# common_file_name = "testdata.tatoeba_identic_trim.20_vocab.25000_directions.2_layers.4_hidden.100_dropout.0.5_learningrate.1_batch.10_epochs.100"
-# id_lang = 'id'
-# en_lang = 'en'
-# dataset = 'tatoeba_identic'
-# directory = ''
+# Set the common name of the loading files
+common_file_name = "testdata.tatoeba_identic_trim.20_vocab.25000_directions.2_layers.4_hidden.100_dropout.0.5_learningrate.1_batch.10_epochs.100"
+id_lang = 'id'
+en_lang = 'en'
+dataset = 'tatoeba_identic'
+directory = ''
 
-# # Set the name of the loading files
-# id_vocab_file = directory + id_lang + '_21484_' + dataset + '_vocab.p'
-# en_vocab_file = directory + en_lang + '_21731_' + dataset + '_vocab.p'
-# id_en_enc_file = '%s_%s_enc_direction_%s_layer_%s_hidden_%s_dropout_%s.pth' % (id_lang, en_lang, directions, layers, hidden_size, dropout)
-# id_en_dec_file = '%s_%s_dec_direction_%s_layer_%s_hidden_%s_dropout_%s.pth' % (id_lang, en_lang, directions, layers, hidden_size, dropout)
-# en_id_enc_file = '%s_%s_enc_direction_%s_layer_%s_hidden_%s_dropout_%s.pth' % (en_lang, id_lang, directions, layers, hidden_size, dropout)
-# en_id_dec_file = '%s_%s_dec_direction_%s_layer_%s_hidden_%s_dropout_%s.pth' % (en_lang, id_lang, directions, layers, hidden_size, dropout)
+# Set the name of the loading files
+id_vocab_file = directory + id_lang + '_21484_' + dataset + '_vocab.p'
+en_vocab_file = directory + en_lang + '_21731_' + dataset + '_vocab.p'
+id_en_enc_file = '%s_%s_enc_direction_%s_layer_%s_hidden_%s_dropout_%s.pth' % (id_lang, en_lang, directions, layers, hidden_size, dropout)
+id_en_dec_file = '%s_%s_dec_direction_%s_layer_%s_hidden_%s_dropout_%s.pth' % (id_lang, en_lang, directions, layers, hidden_size, dropout)
+en_id_enc_file = '%s_%s_enc_direction_%s_layer_%s_hidden_%s_dropout_%s.pth' % (en_lang, id_lang, directions, layers, hidden_size, dropout)
+en_id_dec_file = '%s_%s_dec_direction_%s_layer_%s_hidden_%s_dropout_%s.pth' % (en_lang, id_lang, directions, layers, hidden_size, dropout)
 
-# # Mandatory variables initialization
-# device = torch.device('cpu')
+# Mandatory variables initialization
+device = torch.device('cpu')
 # use_cuda = torch.cuda.is_available()
-# id_vocab = None
-# en_vocab = None
-# id_en_encoder = None
-# id_en_decoder = None
-# en_id_encoder = None
-# en_id_decoder = None
+id_vocab = None
+en_vocab = None
+id_en_encoder = None
+id_en_decoder = None
+en_id_encoder = None
+en_id_decoder = None
 
-# # LOAD EVERYTHING
+# LOAD EVERYTHING
 
-# id_vocab = pickle.load(open(id_vocab_file,'rb'))
-# en_vocab = pickle.load(open(en_vocab_file,'rb'))
+id_vocab = pickle.load(open(id_vocab_file,'rb'))
+en_vocab = pickle.load(open(en_vocab_file,'rb'))
 
-# id_en_encoder = EncoderRNN(id_vocab.vocab_size, hidden_size, layers=layers, 
-#                            dropout=dropout, bidirectional=bidirectional)
-# id_en_decoder = DecoderAttn(hidden_size, en_vocab.vocab_size, layers=layers, 
-#                             dropout=dropout, bidirectional=bidirectional)
+id_en_encoder = EncoderRNN(id_vocab.vocab_size, hidden_size, layers=layers, 
+                           dropout=dropout, bidirectional=bidirectional)
+id_en_decoder = DecoderAttn(hidden_size, en_vocab.vocab_size, layers=layers, 
+                            dropout=dropout, bidirectional=bidirectional)
 
-# id_en_encoder.load_state_dict(torch.load(id_en_enc_file, map_location=device))
-# id_en_decoder.load_state_dict(torch.load(id_en_dec_file, map_location=device))
+id_en_encoder.load_state_dict(torch.load(id_en_enc_file, map_location=device))
+id_en_decoder.load_state_dict(torch.load(id_en_dec_file, map_location=device))
 
-# id_en_encoder.eval()
-# id_en_decoder.eval()
+en_id_encoder = EncoderRNN(en_vocab.vocab_size, hidden_size, layers=layers, 
+                           dropout=dropout, bidirectional=bidirectional)
+en_id_decoder = DecoderAttn(hidden_size, id_vocab.vocab_size, layers=layers, 
+                            dropout=dropout, bidirectional=bidirectional)
+
+en_id_encoder.load_state_dict(torch.load(en_id_enc_file, map_location=device))
+en_id_decoder.load_state_dict(torch.load(en_id_dec_file, map_location=device))
+
+id_en_encoder.eval()
+id_en_decoder.eval()
+
+en_id_encoder.eval()
+en_id_decoder.eval()
+
 # app.config["DEBUG"] = True
 
 def translate(str):
@@ -104,9 +116,8 @@ def translate_view():
 
         if 'message' in request_data:
             message  = request_data['message']
-            translated_message = "OK message accepted"
-            # translated_message = evaluate(id_en_encoder, id_en_decoder, id_vocab, en_vocab,request_data['message'], cutoff_length=20)
-        
+            translated_message = evaluate(en_id_encoder, en_id_decoder, en_vocab, id_vocab,request_data['message'], cutoff_length=20)
+            
 
     return jsonify({'author':author,'message':message,'translated_message':translated_message})
 
@@ -119,7 +130,8 @@ def translate_send():
 
     if request_data:
         if 'message' in request_data:
-            message = "message changed from " + request_data['message'] + " to translated"
+            message =  evaluate(id_en_encoder, id_en_decoder, id_vocab, en_vocab,request_data['message'], cutoff_length=20)
+        
 
     return jsonify({'message':message})
 

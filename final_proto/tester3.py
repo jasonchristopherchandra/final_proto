@@ -9,25 +9,18 @@ import time
 from firebase_admin import messaging,credentials
 import firebase_admin
 
-cur_path = os.path.dirname(__file__)
-print(cur_path)
-
-new_path = os.path.join(cur_path, 'static', "chatlist.txt")
-print('reached')
-
-print(str(sys.argv[1:]))
 
 cred = credentials.Certificate("chattranslator-2c03a-firebase-adminsdk-8554s-175f86d014.json")
 firebase_admin.initialize_app(cred)
 
 print(str(sys.argv[1]))
 try:
-    chat = ChatDownloader().get_chat(str(sys.argv[1]))
+    chat = ChatDownloader().get_chat(str(sys.argv[1])) #gets yt chat message
     for message in chat:
         chatlist  = { }                      # iterate over messages
         chatlist['author'] = message['author']['name'].encode("ascii", errors="ignore").decode()
         chatlist['message'] = message['message'].encode("ascii", errors="ignore").decode()
-        url = 'http://localhost:5000/translate_view'
+        url = 'http://localhost:5000/translate_view' #call ai translation
         data = {
         "author": chatlist['author'],
         "message": chatlist['message'],
@@ -66,5 +59,3 @@ except Exception as inst:
         token=registration_token,
         )
     response = messaging.send(message)
-
-

@@ -124,10 +124,10 @@ def tensorFromSentence(lang, sentence):
     indexes = indexesFromSentence(lang, sentence)
     indexes.append(EOS_token)
     result = torch.LongTensor(indexes).view(-1)
-    if use_cuda:
-        return result.cuda()
-    else:
-        return result
+    # if use_cuda:
+    #     return result.cuda()
+    # else:
+    return result
 
 # converts from tensor of one hot encoding vector indices to sentence
 # def sentenceFromTensor(lang, tensor):
@@ -170,10 +170,10 @@ class EncoderRNN(nn.Module):
                                     batch_size, self.hidden_size))
         c_hidden = Variable(torch.zeros(self.num_layers*self.directions, 
                                     batch_size, self.hidden_size))
-        if torch.cuda.is_available():
-            return h_hidden.cuda(), c_hidden.cuda()
-        else:
-            return h_hidden, c_hidden
+        # if torch.cuda.is_available():
+        #     return h_hidden.cuda(), c_hidden.cuda()
+        # else:
+        return h_hidden, c_hidden
 
 class DecoderAttn(nn.Module):
 	def __init__(self, hidden_size, output_size, layers=1, dropout=0.1, bidirectional=True):
@@ -234,8 +234,10 @@ def evaluate(encoder, decoder, input_lang, output_lang, sentence, cutoff_length)
         enc_h_hidden, enc_c_hidden = encoder.create_init_hiddens(1)
         enc_hiddens, enc_outputs = encoder(input_variable, enc_h_hidden, enc_c_hidden)
 
-        decoder_input = Variable(torch.LongTensor(1,1).fill_(output_lang.word_to_index.get("SOS")).cuda()) if use_cuda \
-                        else Variable(torch.LongTensor(1,1).fill_(output_lang.word_to_index.get("SOS")))
+        # Variable(torch.LongTensor(1,1).fill_(output_lang.word_to_index.get("SOS")).cuda()) if use_cuda \
+        #                 else
+
+        decoder_input = Variable(torch.LongTensor(1,1).fill_(output_lang.word_to_index.get("SOS")))
         dec_h_hidden = enc_outputs[0]
         dec_c_hidden = enc_outputs[1]
 
@@ -252,8 +254,10 @@ def evaluate(encoder, decoder, input_lang, output_lang, sentence, cutoff_length)
             else:
                 decoded_words.append(output_lang.index_to_word[ni])
 
-            decoder_input = Variable(torch.LongTensor(1,1).fill_(ni).cuda()) if use_cuda \
-                            else Variable(torch.LongTensor(1,1).fill_(ni))
+            # Variable(torch.LongTensor(1,1).fill_(ni).cuda()) if use_cuda \
+            #                 else 
+
+            decoder_input = Variable(torch.LongTensor(1,1).fill_(ni))
             dec_h_hidden = dec_outputs[0]
             dec_c_hidden = dec_outputs[1]
 

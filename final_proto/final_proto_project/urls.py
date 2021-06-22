@@ -28,7 +28,6 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name="index.html")),
     path('error/', TemplateView.as_view(template_name="500.html")),
     path('about/', TemplateView.as_view(template_name="about.html")),
-    path('enter_url/', TemplateView.as_view(template_name="enter_url.html")),
     path('accounts/', include('allauth.urls')),
     path('logout/', LogoutView.as_view()),
     url(r'^admin/', admin.site.urls),

@@ -3,6 +3,18 @@
     <head>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
         <title>ChatTranslator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script>
+            function UrlCheck(){
+                console.log("triggered");
+                if($("#urlinput").val().trim().length < 1)
+                {
+                    alert("Please Enter URL...");
+                    return; 
+                }
+            }
+        </script>
     </head>
     <body>
         <div id = 'navbar'>
@@ -16,8 +28,8 @@
                     <p style='text-align:center'>Welcome!! Thanks for logging in! We're about to start a new journey together. But first, Please enter your URL</p>
                     <form action="/get_url/" method="POST" style='text-align:center'> 
                         {% csrf_token %}
-                        <input style='text-align:center' type="text" name="URL" placeholder="Please Input Your YouTube URL Here" size=40>
-                        <input style='text-align:center' type="submit" value="Send!">
+                        <input style='text-align:center' id='urlinput' type="text" name="URL" placeholder="Please Input Your YouTube URL Here" size=40>
+                        <button style='text-align:center' tye="submit" onclick='UrlCheck()' >Send!</button>
                     </form>
                     <br>
                     <br>
