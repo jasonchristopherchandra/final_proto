@@ -74,6 +74,7 @@ def send_message(request):
     message = data['message']
     id = extract_video_id(url)
     print(id)
+    print(message)
     token = SocialToken.objects.get(account__user=request.user, account__provider='google')
     print(token)
     # CLIENT_SECRET_FILE = 'client_secret_51870834106-rtq1bi2n4n6cme450auv0iffv9fpokre.apps.googleusercontent.com.json'

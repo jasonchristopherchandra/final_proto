@@ -21,7 +21,5 @@ do are you sure checking (testing)
 
 make sure error page handling works (testing)
 
-403 functionality (testing)
-
 
 testing site https://www.youtube.com/watch?v=5qap5aO4i9A

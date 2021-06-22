@@ -199,19 +199,21 @@
                 });
             };
             function send_message(){
-                // function csrfSafeMethod(method) {
-                //         // these HTTP methods do not require CSRF protection
-                //         return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-                //     };
-                //     $.ajaxSetup({
-                //         beforeSend: function(xhr, settings) {
-                //             if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-                //                 xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
-                //             }
-                //         }
-                //     });
+                function csrfSafeMethod(method) {
+                        // these HTTP methods do not require CSRF protection
+                        return (/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+                    };
+                    $.ajaxSetup({
+                        beforeSend: function(xhr, settings) {
+                            if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+                                xhr.setRequestHeader("X-CSRFToken", "{{csrf_token}}");
+                            }
+                        }
+                    });
+                    console.log('hey');
                     if($("#translatedytmessage").val().trim().length < 1)
                     {
+                        console.log('translated checking');
                         if($("#sendytmessage").val().trim().length < 1)
                         {
                             alert("Please Enter Text...");
@@ -226,7 +228,6 @@
                     {
                         message = document.getElementById("translatedytmessage").value;
                     };
-
                     if (window.confirm("Are you sure?")) {
                         $.ajax({
                             type: "POST",

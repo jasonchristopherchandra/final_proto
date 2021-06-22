@@ -1,6 +1,5 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-
 from .functions import send_message,view_message,check_active_livechat
 
 from django.core.exceptions import PermissionDenied
