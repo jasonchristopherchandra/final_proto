@@ -26,7 +26,6 @@ urlpatterns = [
     #...
     url(r'', include('final_proto_app.urls')),
     path('', TemplateView.as_view(template_name="index.html")),
-    path('error/', TemplateView.as_view(template_name="500.html")),
     path('about/', TemplateView.as_view(template_name="about.html")),
     path('accounts/', include('allauth.urls')),
     path('logout/', LogoutView.as_view()),
